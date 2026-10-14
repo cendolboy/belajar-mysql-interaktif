@@ -23,7 +23,7 @@ Modul web interaktif ini dirancang khusus untuk membantu kamu menguasai **SQL (S
 
 Klik tombol hijau di bawah ini untuk langsung membuka modul interaktif di browsermu:
 
-👉 [![Akses Web Modul Interaktif](https://img.shields.io/badge/🌐_KLIK_DISINI_UNTUK_MENGAKSES_MODUL-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)]([https://USERNAME.github.io/NAMA-REPOSITORI/](https://cendolboy.github.io/belajar-mysql-interaktif/)) 👈
+👉 [![Akses Web Modul Interaktif](https://shields.io)](https://cendolboy.github.io/belajar-mysql-interaktif/)👈
 
 ---
 
