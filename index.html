@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Belajar Interaktif MySQL - SMA/SMK Informatika</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        code, pre, .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.7);
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .print-full {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col antialiased">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-800 via-sky-800 to-teal-700 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-900 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md shadow-inner">
+                        <i class="fa-solid fa-database text-3xl text-amber-300"></i>
+                    </div>
+                    <div>
+                        <span class="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Kurikulum Merdeka Informatika SMA/SMK</span>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Modul Belajar MySQL Interaktif</h1>
+                        <p class="text-sky-100 dark:text-slate-300 text-xs sm:text-sm">Operator, Agregator, Wildcard, ORDER, GROUP BY, JOIN & Manipulasi Data DML</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                    <!-- Global Search Bar -->
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
+                        <input type="text" id="global-search" oninput="handleGlobalSearch()" placeholder="Cari sintaks / operator..." 
+                            class="w-full sm:w-60 pl-8 pr-3 py-2 rounded-xl text-xs bg-white/10 dark:bg-slate-800/80 border border-white/20 dark:border-slate-700 text-white placeholder-sky-200 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-300 backdrop-blur-sm">
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2.5 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md transition border border-white/20 text-xs font-semibold flex items-center gap-1.5" title="Ubah Mode Layar">
+                        <i class="fa-solid fa-moon dark:hidden text-amber-300"></i>
+                        <i class="fa-solid fa-sun hidden dark:inline text-amber-300"></i>
+                    </button>
+
+                    <!-- Print / PDF -->
+                    <button onclick="window.print()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-xs">
+                        <i class="fa-solid fa-file-pdf text-sm"></i> <span class="hidden sm:inline">Cetak / PDF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs (PERSIS SESUAI URUTAN PERMINTAAN USER) -->
+    <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2.5 scrollbar-none" id="tab-buttons">
+                
+                <button onclick="switchTab('aritmatika')" id="tab-btn-aritmatika" class="tab-btn px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-sky-50 dark:bg-slate-700 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-slate-600">
+                    <span class="w-4 h-4 rounded-full bg-sky-600 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                    <i class="fa-solid fa-calculator"></i> Operator Aritmatika
+                </button>
+
+                <button onclick="switchTab('perbandingan')" id="tab-btn-perbandingan" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">2</span>
+                    <i class="fa-solid fa-scale-balanced"></i> Operator Perbandingan
+                </button>
+
+                <button onclick="switchTab('agregator')" id="tab-btn-agregator" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">3</span>
+                    <i class="fa-solid fa-chart-pie"></i> Agregator
+                </button>
+
+                <button onclick="switchTab('like')" id="tab-btn-like" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">4</span>
+                    <i class="fa-solid fa-asterisk"></i> LIKE & Wildcard
+                </button>
+
+                <button onclick="switchTab('order')" id="tab-btn-order" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">5</span>
+                    <i class="fa-solid fa-arrow-down-a-z"></i> ORDER BY
+                </button>
+
+                <button onclick="switchTab('groupby')" id="tab-btn-groupby" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">6</span>
+                    <i class="fa-solid fa-layer-group"></i> GROUP BY
+                </button>
+
+                <button onclick="switchTab('join')" id="tab-btn-join" class="tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] flex items-center justify-center font-bold">7</span>
+                    <i class="fa-solid fa-diagram-project"></i> JOIN
+                </button>
+
+                <button onclick="switchTab('manipulasi')" id="tab-btn-manipulasi" class="tab-btn px-3 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50/50 dark:bg-rose-950/30 border border-rose-200/60 hover:bg-rose-100 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] flex items-center justify-center font-bold">8</span>
+                    <i class="fa-solid fa-pen-to-square"></i> Manipulasi Data (DML)
+                </button>
+
+                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 my-auto mx-1"></div>
+
+                <button onclick="switchTab('schema')" id="tab-btn-schema" class="tab-btn px-3 py-2 rounded-xl text-xs font-bold text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-table-cells text-teal-600"></i> Skema Tabel
+                </button>
+
+                <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn px-3 py-2 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-terminal text-amber-600"></i> SQL Sandbox Live
+                </button>
+
+                <button onclick="switchTab('kuis')" id="tab-btn-kuis" class="tab-btn px-3 py-2 rounded-xl text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-graduation-cap text-purple-600"></i> Kuis Evaluasi SMA
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Notification for Copy Code -->
+    <div id="toast-copy" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300">
+        <i class="fa-solid fa-circle-check text-base"></i>
+        <span>Sintaks SQL berhasil disalin!</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- Dynamic Content Sections Container (Chapters 1-8) -->
+        <div id="tab-contents-container">
+            <!-- Dynamic tab content rendered via JS -->
+        </div>
+
+        <!-- SECTION EXTRA: SAMPEL SKEMA TABEL SEKOLAH -->
+        <section id="section-schema" class="tab-content hidden space-y-6">
+            <div class="bg-indigo-50 dark:bg-indigo-950/40 border-l-4 border-indigo-600 p-4 rounded-r-xl shadow-sm">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-circle-info text-indigo-600 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-indigo-900 dark:text-indigo-200">Sampel Skema Database Sekolah SMA/SMK</h3>
+                        <p class="text-xs text-indigo-800 dark:text-indigo-300 mt-1">
+                            Seluruh contoh query pada modul ini menggunakan 4 sampel tabel terintegrasi di lingkungan sekolah berikut. Pahami relasi Primary Key (PK) & Foreign Key (FK) antar tabel!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid 4 Tabel Sekolah -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- 1. Tabel siswa -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2 font-bold text-sm">
+                            <i class="fa-solid fa-user-graduate text-teal-400"></i> Tabel <code>siswa</code>
+                        </div>
+                        <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-mono">Master Siswa</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-600">
+                                    <th class="p-2.5">id_siswa (PK)</th>
+                                    <th class="p-2.5">nis</th>
+                                    <th class="p-2.5">nama</th>
+                                    <th class="p-2.5">kelas</th>
+                                    <th class="p-2.5">jenis_kelamin</th>
+                                    <th class="p-2.5">kota_asal</th>
+                                    <th class="p-2.5">poin_pelanggaran</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-siswa" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Tabel nilai_ujian -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2 font-bold text-sm">
+                            <i class="fa-solid fa-file-pen text-amber-400"></i> Tabel <code>nilai_ujian</code>
+                        </div>
+                        <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-mono">FK: id_siswa</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-600">
+                                    <th class="p-2.5">id_nilai (PK)</th>
+                                    <th class="p-2.5">id_siswa (FK)</th>
+                                    <th class="p-2.5">mata_pelajaran</th>
+                                    <th class="p-2.5">nilai_angka</th>
+                                    <th class="p-2.5">semester</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-nilai" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Tabel ekstrakurikuler -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2 font-bold text-sm">
+                            <i class="fa-solid fa-futbol text-emerald-400"></i> Tabel <code>ekstrakurikuler</code>
+                        </div>
+                        <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-mono">FK: id_siswa</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-600">
+                                    <th class="p-2.5">id_ekskul (PK)</th>
+                                    <th class="p-2.5">id_siswa (FK)</th>
+                                    <th class="p-2.5">nama_ekskul</th>
+                                    <th class="p-2.5">jabatan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-ekskul" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. Tabel peminjaman_buku -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2 font-bold text-sm">
+                            <i class="fa-solid fa-book-bookmark text-sky-400"></i> Tabel <code>peminjaman_buku</code>
+                        </div>
+                        <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-mono">FK: id_siswa</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-600">
+                                    <th class="p-2.5">id_pinjam (PK)</th>
+                                    <th class="p-2.5">id_siswa (FK)</th>
+                                    <th class="p-2.5">judul_buku</th>
+                                    <th class="p-2.5">tgl_pinjam</th>
+                                    <th class="p-2.5">tgl_kembali</th>
+                                    <th class="p-2.5">denda</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-pinjam" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION EXTRA: SQL SANDBOX / SIMULATOR LIVE INTERAKTIF -->
+        <section id="section-simulator" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left: Presets by Category -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Preset Query Live
+                            </h3>
+                            <button onclick="resetSampleDatabase()" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-lg font-semibold transition flex items-center gap-1">
+                                <i class="fa-solid fa-rotate-left text-amber-500"></i> Reset DB
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih preset contoh query untuk mengeksekusi simulasi langsung pada database sekolah:</p>
+                        
+                        <div class="space-y-2 max-h-[420px] overflow-y-auto pr-1" id="preset-buttons">
+                            <!-- Presets populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                        <div class="font-bold flex items-center gap-1.5 text-sm text-amber-800 dark:text-amber-300">
+                            <i class="fa-solid fa-lightbulb"></i> Fitur Simulator DML Real-Time
+                        </div>
+                        <p>Kamu dapat mengetik sintaks `INSERT`, `UPDATE`, atau `DELETE` secara bebas di editor. Perubahan data akan langsung ter-update di memori browser dan memutakhirkan tabel skema!</p>
+                    </div>
+                </div>
+
+                <!-- Right: Code Editor & Result Output -->
+                <div class="lg:col-span-7 space-y-4">
+                    <!-- SQL Code Editor -->
+                    <div class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800 overflow-hidden">
+                        <div class="bg-slate-800/90 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                            <span class="text-xs font-mono font-bold text-slate-300 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                                Interactive Editor MySQL Engine
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="copyCurrentEditor()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> Salin
+                                </button>
+                                <button onclick="runCustomQuery()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-play"></i> Jalankan Query
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <textarea id="sql-editor" rows="5" class="w-full bg-transparent text-emerald-400 font-mono text-xs sm:text-sm focus:outline-none resize-none leading-relaxed" placeholder="Tulis query SELECT, INSERT, UPDATE, atau DELETE di sini..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Output Card -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                        <div class="bg-slate-100 dark:bg-slate-700/60 px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                            <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-table-cells text-sky-600 dark:text-sky-400"></i> Hasil Simulasi Data Output
+                            </span>
+                            <span id="sim-status" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Ready</span>
+                        </div>
+                        
+                        <!-- Explanation Banner -->
+                        <div id="sim-explanation" class="p-3.5 bg-sky-50 dark:bg-sky-950/30 border-b border-sky-100 dark:border-sky-900/50 text-xs text-sky-900 dark:text-sky-200 leading-relaxed font-medium">
+                            Klik preset di sebelah kiri atau ketik query milikmu lalu tekan tombol Jalankan Query.
+                        </div>
+
+                        <!-- Result Table Container -->
+                        <div class="overflow-x-auto min-h-[200px] max-h-[350px]">
+                            <table class="w-full text-left border-collapse text-xs" id="sim-result-table">
+                                <thead class="bg-slate-50 dark:bg-slate-700/40 text-slate-600 dark:text-slate-300 font-semibold uppercase tracking-wider text-[10px]" id="sim-thead">
+                                    <tr><th class="p-3">Status</th></tr>
+                                </thead>
+                                <tbody id="sim-tbody" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono">
+                                    <tr><td class="p-4 text-slate-400 italic text-center">Belum ada query yang dijalankan.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION EXTRA: KUIS EVALUASI INTERAKTIF SMA -->
+        <section id="section-kuis" class="tab-content hidden space-y-6">
+            
+            <!-- Quiz Header -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-award text-base"></i> Evaluasi Pemahaman SMA Informatika
+                    </div>
+                    <h2 class="text-2xl font-extrabold">Kuis Interaktif Master MySQL</h2>
+                    <p class="text-slate-300 text-xs max-w-xl">Uji pemahamanmu tentang Aritmatika, Perbandingan, Agregator, Wildcard LIKE, ORDER BY, GROUP BY, JOIN, dan Manipulasi Data DML!</p>
+                </div>
+                
+                <div id="quiz-summary-card" class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 text-center min-w-[200px] shadow-inner">
+                    <div class="text-xs text-slate-300">Skor Akhir Kamu</div>
+                    <div class="text-4xl font-extrabold text-amber-300 my-1" id="quiz-score-display">0 / 100</div>
+                    <button onclick="resetQuiz()" class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-bold px-3.5 py-2 rounded-xl transition mt-1 w-full shadow-md">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Ulangi Kuis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2 no-print" id="quiz-cat-filters">
+                <button onclick="filterQuizCat('ALL')" class="quiz-cat-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm">Semua Soal (16 Soal)</button>
+                <button onclick="filterQuizCat(1)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">1. Aritmatika</button>
+                <button onclick="filterQuizCat(2)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">2. Perbandingan</button>
+                <button onclick="filterQuizCat(3)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">3. Agregator</button>
+                <button onclick="filterQuizCat(4)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">4. LIKE</button>
+                <button onclick="filterQuizCat(5)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">5. ORDER</button>
+                <button onclick="filterQuizCat(6)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">6. GROUP BY</button>
+                <button onclick="filterQuizCat(7)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">7. JOIN</button>
+                <button onclick="filterQuizCat(8)" class="quiz-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">8. DML</button>
+            </div>
+
+            <!-- Quiz Questions Container -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- Quiz Cards populated by JS -->
+            </div>
+
+            <!-- Submit Quiz Button -->
+            <div class="flex justify-center pt-4 pb-8 no-print">
+                <button onclick="submitQuiz()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-base font-bold px-8 py-3.5 rounded-2xl shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Periksa & Kirim Jawaban Kuis
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs text-center no-print mt-auto">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+            <p class="font-medium text-slate-300">Modul Interaktif MySQL - Bahan Ajar Informatika SMA/SMK Kurikulum Merdeka</p>
+            <p class="text-slate-500">Dirancang responsif dan interaktif untuk pemahaman query dasar, agregator, JOIN, hingga manipulasi data DML.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initial Dataset for Sample Databases
+        const initialDbSiswa = [
+            { id_siswa: 1, nis: '1001', nama: 'Ahmad Dahlan', kelas: 'X-IPA-1', jenis_kelamin: 'L', kota_asal: 'Bandung', poin_pelanggaran: 5 },
+            { id_siswa: 2, nis: '1002', nama: 'Siti Nurhaliza', kelas: 'X-IPA-1', jenis_kelamin: 'P', kota_asal: 'Jakarta', poin_pelanggaran: 0 },
+            { id_siswa: 3, nis: '1003', nama: 'Budi Santoso', kelas: 'X-IPA-2', jenis_kelamin: 'L', kota_asal: 'Bandung', poin_pelanggaran: 15 },
+            { id_siswa: 4, nis: '1004', nama: 'Rania Putri', kelas: 'XI-IPS-1', jenis_kelamin: 'P', kota_asal: 'Surabaya', poin_pelanggaran: 0 },
+            { id_siswa: 5, nis: '1005', nama: 'Dewi Pratama', kelas: 'XI-IPS-1', jenis_kelamin: 'P', kota_asal: 'Jakarta', poin_pelanggaran: 10 }
+        ];
+
+        const initialDbNilai = [
+            { id_nilai: 101, id_siswa: 1, mata_pelajaran: 'Informatika', nilai_angka: 88, semester: 1 },
+            { id_nilai: 102, id_siswa: 2, mata_pelajaran: 'Informatika', nilai_angka: 95, semester: 1 },
+            { id_nilai: 103, id_siswa: 3, mata_pelajaran: 'Informatika', nilai_angka: 72, semester: 1 },
+            { id_nilai: 104, id_siswa: 4, mata_pelajaran: 'Informatika', nilai_angka: 84, semester: 1 },
+            { id_nilai: 105, id_siswa: 1, mata_pelajaran: 'Matematika', nilai_angka: 78, semester: 1 },
+            { id_nilai: 106, id_siswa: 2, mata_pelajaran: 'Matematika', nilai_angka: 92, semester: 1 }
+        ];
+
+        const initialDbEkskul = [
+            { id_ekskul: 1, id_siswa: 1, nama_ekskul: 'Pramuka', jabatan: 'Ketua' },
+            { id_ekskul: 2, id_siswa: 1, nama_ekskul: 'Basket', jabatan: 'Anggota' },
+            { id_ekskul: 3, id_siswa: 2, nama_ekskul: 'Paskibra', jabatan: 'Sekretaris' },
+            { id_ekskul: 4, id_siswa: 3, nama_ekskul: 'Pramuka', jabatan: 'Anggota' }
+        ];
+
+        const initialDbPinjam = [
+            { id_pinjam: 501, id_siswa: 1, judul_buku: 'Basis Data MySQL', tgl_pinjam: '2025-01-10', tgl_kembali: '2025-01-17', denda: 0 },
+            { id_pinjam: 502, id_siswa: 2, judul_buku: 'Pemrograman Python', tgl_pinjam: '2025-01-12', tgl_kembali: null, denda: 5000 },
+            { id_pinjam: 503, id_siswa: 3, judul_buku: 'Jaringan Komputer', tgl_pinjam: '2025-01-15', tgl_kembali: '2025-01-20', denda: 0 },
+            { id_pinjam: 504, id_siswa: 1, judul_buku: 'Kecerdasan Buatan', tgl_pinjam: '2025-02-01', tgl_kembali: null, denda: 10000 },
+            { id_pinjam: 505, id_siswa: 99, judul_buku: 'Kamus Bahasa Inggris 20%', tgl_pinjam: '2025-02-05', tgl_kembali: '2025-02-12', denda: 0 }
+        ];
+
+        // Active State DB
+        let dbSiswa = JSON.parse(JSON.stringify(initialDbSiswa));
+        let dbNilai = JSON.parse(JSON.stringify(initialDbNilai));
+        let dbEkskul = JSON.parse(JSON.stringify(initialDbEkskul));
+        let dbPinjam = JSON.parse(JSON.stringify(initialDbPinjam));
+
+        const modulesData = [
+            // BAB 1: KUMPULAN OPERATOR ARITMATIKA
+            {
+                id: 'aritmatika',
+                title: '1. KUMPULAN OPERATOR ARITMATIKA',
+                icon: 'fa-calculator',
+                description: 'Digunakan untuk melakukan perhitungan matematika pada kolom bertipe numerik seperti menghitung total nilai, denda keterlambatan, atau kalkulasi poin.',
+                items: [
+                    {
+                        nama: '+ (Penjumlahan)',
+                        analogi: 'Menambahkan poin pelanggaran lama siswa dengan poin pelanggaran baru.',
+                        query: 'SELECT nama, poin_pelanggaran,\n       (poin_pelanggaran + 5) AS poin_baru\nFROM siswa;',
+                        hasil: 'Ahmad: 5 + 5 = 10\nBudi: 15 + 5 = 20',
+                        catatan: 'Jika salah satu nilai bernilai NULL, hasil penjumlahan otomatis menjadi NULL.'
+                    },
+                    {
+                        nama: '- (Pengurangan)',
+                        analogi: 'Menghitung sisa denda peminjaman buku setelah dilakukan pembayaran potongan diskon.',
+                        query: 'SELECT judul_buku, denda,\n       (denda - 2000) AS denda_setelah_diskon\nFROM peminjaman_buku\nWHERE denda > 0;',
+                        hasil: 'Python: 5000 - 2000 = 3000\nAI: 10000 - 2000 = 8000',
+                        catatan: 'Pastikan tipe data numerik (INT, DECIMAL) sebelum dilakukan pengurangan.'
+                    },
+                    {
+                        nama: '* (Perkalian)',
+                        analogi: 'Menghitung total denda berdasarkan jumlah hari keterlambatan (misal Rp 1.000 per hari).',
+                        query: 'SELECT id_pinjam, judul_buku,\n       (7 * 1000) AS estimasi_denda_seminggu\nFROM peminjaman_buku;',
+                        hasil: 'estimasi_denda_seminggu: 7000',
+                        catatan: 'Sangat cocok untuk kalkulasi tarif bertingkat atau persentase.'
+                    },
+                    {
+                        nama: '/ (Pembagian Desimal)',
+                        analogi: 'Menghitung rata-rata nilai ujian angka secara manual.',
+                        query: 'SELECT id_siswa, SUM(nilai_angka) / COUNT(*) AS rerata_manual\nFROM nilai_ujian\nGROUP BY id_siswa;',
+                        hasil: 'Siswa 1: 166 / 2 = 83.0000\nSiswa 2: 187 / 2 = 93.5000',
+                        catatan: 'Di MySQL, pembagian / menghasilkan angka desimal pecahan.'
+                    },
+                    {
+                        nama: 'DIV (Pembagian Bulat)',
+                        analogi: 'Mengonversi total hari peminjaman menjadi minggu penuh (tanpa sisa hari).',
+                        query: 'SELECT judul_buku, 14 DIV 7 AS durasi_minggu\nFROM peminjaman_buku\nLIMIT 1;',
+                        hasil: 'durasi_minggu: 2 (Pecahan dibuang)',
+                        catatan: 'Operator DIV membuang angka desimal di belakang koma (Floor Division).'
+                    },
+                    {
+                        nama: 'MOD / % (Sisa Bagi / Modulo)',
+                        analogi: 'Menentukan pembagian giliran piket ganjil atau genap berdasarkan id_siswa.',
+                        query: 'SELECT id_siswa, nama,\n       (id_siswa % 2) AS sisa_mod\nFROM siswa;',
+                        hasil: 'ID 1: 1 (Ganjil)\nID 2: 0 (Genap)\nID 3: 1 (Ganjil)',
+                        catatan: 'Sangat berguna untuk pengelompokan baris ganjil/genap pada laporan.'
+                    }
+                ]
+            },
+
+            // BAB 2: KUMPULAN OPERATOR PERBANDINGAN
+            {
+                id: 'perbandingan',
+                title: '2. KUMPULAN OPERATOR PERBANDINGAN',
+                icon: 'fa-scale-balanced',
+                description: 'Digunakan dalam klausa WHERE untuk membandingkan dua nilai. Mengembalikan nilai TRUE (cocok) atau FALSE (tidak cocok).',
+                items: [
+                    {
+                        nama: '= (Sama Dengan)',
+                        analogi: 'Guru BK menyaring siswa yang TEPAT berasal dari kota "Bandung".',
+                        query: 'SELECT * FROM siswa\nWHERE kota_asal = \'Bandung\';',
+                        hasil: 'Ahmad Dahlan (Bandung), Budi Santoso (Bandung)',
+                        catatan: 'Teks string wajib diapit tanda petik tunggal (\'...\').'
+                    },
+                    {
+                        nama: '!= atau <> (Tidak Sama dengan)',
+                        analogi: 'Menampilkan daftar siswa KECUALI yang berasal dari kota "Jakarta".',
+                        query: 'SELECT * FROM siswa\nWHERE kota_asal != \'Jakarta\';',
+                        hasil: 'Ahmad (Bandung), Budi (Bandung), Rania (Surabaya)',
+                        catatan: 'Sintaks != dan <> berfungsi sama persis di MySQL.'
+                    },
+                    {
+                        nama: '< & > (Lebih Kecil & Lebih Besar)',
+                        analogi: 'Mencari siswa yang memiliki poin pelanggaran di atas 5.',
+                        query: 'SELECT * FROM siswa\nWHERE poin_pelanggaran > 5;',
+                        hasil: 'Budi Santoso (15), Dewi Pratama (10)',
+                        catatan: 'Batas angka (misal 5) tidak ikut terhitung.'
+                    },
+                    {
+                        nama: '<= & >= (Dengan Batas Sama)',
+                        analogi: 'Menyaring nilai siswa yang mencapai batas KKM sekolah yaitu 84.',
+                        query: 'SELECT * FROM nilai_ujian\nWHERE nilai_angka >= 84;',
+                        hasil: 'Nilai 88, 95, 84, 92 terhitung lulus KKM.',
+                        catatan: 'Angka batas (misal 84) IKUT terhitung lolos kriteria.'
+                    },
+                    {
+                        nama: 'BETWEEN ... AND ...',
+                        analogi: 'Mencari siswa yang memiliki poin pelanggaran di rentang 5 hingga 15.',
+                        query: 'SELECT * FROM siswa\nWHERE poin_pelanggaran BETWEEN 5 AND 15;',
+                        hasil: 'Ahmad (5), Budi (15), Dewi (10)',
+                        catatan: 'BETWEEN bersifat inklusif (Sama dengan >= AND <=).'
+                    },
+                    {
+                        nama: 'NOT BETWEEN',
+                        analogi: 'Mencari nilai siswa yang berada di LUAR rentang 80 sampai 90.',
+                        query: 'SELECT * FROM nilai_ujian\nWHERE nilai_angka NOT BETWEEN 80 AND 90;',
+                        hasil: 'Budi (72), Siti (95, 92)',
+                        catatan: 'Mengecualikan seluruh angka dalam rentang tersebut.'
+                    },
+                    {
+                        nama: 'IN (...)',
+                        analogi: 'Memilih siswa yang bertempat tinggal di Jakarta ATAU Surabaya.',
+                        query: 'SELECT * FROM siswa\nWHERE kota_asal IN (\'Jakarta\', \'Surabaya\');',
+                        hasil: 'Siti Nurhaliza, Rania Putri, Dewi Pratama',
+                        catatan: 'Jauh lebih ringkas daripada menulis klausa OR berulang-ulang.'
+                    },
+                    {
+                        nama: 'NOT IN (...)',
+                        analogi: 'Mencari siswa yang tidak berada di kelas X-IPA-1 maupun X-IPA-2.',
+                        query: 'SELECT * FROM siswa\nWHERE kelas NOT IN (\'X-IPA-1\', \'X-IPA-2\');',
+                        hasil: 'Rania Putri (XI-IPS-1), Dewi Pratama (XI-IPS-1)',
+                        catatan: 'Mengecualikan semua opsi yang terdaftar dalam tanda kurung.'
+                    },
+                    {
+                        nama: 'IS NULL / IS NOT NULL',
+                        analogi: 'Mengecek peminjaman buku yang belum dikembalikan (tgl_kembali bernilai NULL).',
+                        query: 'SELECT * FROM peminjaman_buku\nWHERE tgl_kembali IS NULL;',
+                        hasil: 'Pemrograman Python, Kecerdasan Buatan',
+                        catatan: 'JANGAN gunakan `= NULL`. Memeriksa nilai kosong WAJIB menggunakan `IS NULL`!'
+                    }
+                ]
+            },
+
+            // BAB 3: KUMPULAN AGREGATOR
+            {
+                id: 'agregator',
+                title: '3. KUMPULAN AGREGATOR',
+                icon: 'fa-chart-pie',
+                description: 'Fungsi khusus untuk menghitung sekumpulan data baris menjadi satu nilai ringkasan statistik.',
+                items: [
+                    {
+                        nama: 'COUNT(*) vs COUNT(kolom)',
+                        analogi: 'Menghitung total seluruh baris vs menghitung jumlah buku yang sudah dikembalikan (non-null).',
+                        query: 'SELECT COUNT(*) AS total_transaksi,\n       COUNT(tgl_kembali) AS dikembalikan\nFROM peminjaman_buku;',
+                        hasil: 'total_transaksi: 5, dikembalikan: 3',
+                        catatan: 'COUNT(*) menghitung semua baris, sedangkan COUNT(kolom) mengabaikan nilai NULL.'
+                    },
+                    {
+                        nama: 'COUNT(DISTINCT kolom)',
+                        analogi: 'Menghitung berapa banyak kota asal unik tempat tinggal siswa.',
+                        query: 'SELECT COUNT(DISTINCT kota_asal) AS jml_kota_unik\nFROM siswa;',
+                        hasil: 'jml_kota_unik: 3 (Bandung, Jakarta, Surabaya)',
+                        catatan: 'Eliminasi duplikasi sebelum dihitung.'
+                    },
+                    {
+                        nama: 'SUM()',
+                        analogi: 'Petugas perpustakaan menghitung total seluruh denda yang terkumpul.',
+                        query: 'SELECT SUM(denda) AS total_denda_sekolah\nFROM peminjaman_buku;',
+                        hasil: 'total_denda_sekolah: 15000',
+                        catatan: 'Hanya berlaku untuk kolom numerik.'
+                    },
+                    {
+                        nama: 'AVG()',
+                        analogi: 'Guru Informatika menghitung rata-rata nilai angka seluruh ujian.',
+                        query: 'SELECT ROUND(AVG(nilai_angka), 2) AS rerata_ujian\nFROM nilai_ujian;',
+                        hasil: 'rerata_ujian: 84.83',
+                        catatan: 'Gunakan ROUND(..., 2) agar angka desimal dibulatkan 2 digit.'
+                    },
+                    {
+                        nama: 'MIN() & MAX()',
+                        analogi: 'Mencari nilai ujian terkecil dan tertinggi di sekolah.',
+                        query: 'SELECT MIN(nilai_angka) AS nilai_terendah,\n       MAX(nilai_angka) AS nilai_tertinggi\nFROM nilai_ujian;',
+                        hasil: 'nilai_terendah: 72, nilai_tertinggi: 95',
+                        catatan: 'Dapat juga digunakan pada tipe data tanggal/string.'
+                    },
+                    {
+                        nama: 'GROUP_CONCAT()',
+                        analogi: 'Menggabungkan seluruh nama ekstrakurikuler yang diikuti siswa menjadi 1 baris teks dipisah koma.',
+                        query: 'SELECT id_siswa,\n       GROUP_CONCAT(nama_ekskul SEPARATOR \', \') AS daftar_ekskul\nFROM ekstrakurikuler\nGROUP BY id_siswa;',
+                        hasil: 'Siswa 1: "Pramuka, Basket"\nSiswa 2: "Paskibra"',
+                        catatan: 'Sangat berguna untuk merangkum hubungan One-to-Many.'
+                    }
+                ]
+            },
+
+            // BAB 4: KUMPULAN LIKE & WILDCARD
+            {
+                id: 'like',
+                title: '4. KUMPULAN LIKE & WILDCARD',
+                icon: 'fa-asterisk',
+                description: 'Digunakan untuk pencarian pola teks fleksibel dalam kolom string (Pencarian nama, kata kunci, ekspresi).',
+                items: [
+                    {
+                        nama: 'LIKE \'A%\' (Awalan Kata)',
+                        analogi: 'Mencari siswa yang nama depannya diawali huruf \'A\'.',
+                        query: 'SELECT * FROM siswa\nWHERE nama LIKE \'A%\';',
+                        hasil: 'Ahmad Dahlan',
+                        catatan: 'Simbol `%` mewakili 0, 1, atau banyak karakter bebas.'
+                    },
+                    {
+                        nama: 'LIKE \'%Pratama\' (Akhiran Kata)',
+                        analogi: 'Mencari siswa yang nama belakangnya diakhiri kata \'Pratama\'.',
+                        query: 'SELECT * FROM siswa\nWHERE nama LIKE \'%Pratama\';',
+                        hasil: 'Dewi Pratama',
+                        catatan: 'Memudahkan pencarian nama belakang atau marga.'
+                    },
+                    {
+                        nama: 'LIKE \'%Budi%\' (Mengandung Kata)',
+                        analogi: 'Mencari siswa yang namanya mengandung kata \'Budi\'.',
+                        query: 'SELECT * FROM siswa\nWHERE nama LIKE \'%Budi%\';',
+                        hasil: 'Budi Santoso',
+                        catatan: 'Sangat populer untuk fitur Live Search pada aplikasi web.'
+                    },
+                    {
+                        nama: 'LIKE \'X-IPA-_\' (Underscore Presisi)',
+                        analogi: 'Mencari kelas X-IPA diikuti TEPAT 1 karakter (misal X-IPA-1, X-IPA-2).',
+                        query: 'SELECT * FROM siswa\nWHERE kelas LIKE \'X-IPA-_\';',
+                        hasil: 'Ahmad (X-IPA-1), Siti (X-IPA-1), Budi (X-IPA-2)',
+                        catatan: 'Tanda underscore (_) mewakili TEPAT SATU karakter bebas.'
+                    },
+                    {
+                        nama: 'Kombinasi % & _ (\'A__%\')',
+                        analogi: 'Mencari nama yang diawali huruf A dan memiliki minimal 3 huruf.',
+                        query: 'SELECT * FROM siswa\nWHERE nama LIKE \'A__%\';',
+                        hasil: 'Ahmad Dahlan (A-h-m-a-d...)',
+                        catatan: 'Menggabungkan panjang minimal karakter dan ekor bebas.'
+                    },
+                    {
+                        nama: 'LIKE BINARY (Case Sensitive)',
+                        analogi: 'Pencarian peka huruf kapital (\'ahmad\' vs \'Ahmad\').',
+                        query: 'SELECT * FROM siswa\nWHERE BINARY nama LIKE \'%ahmad%\';',
+                        hasil: '0 Baris dikembalikan (Karena huruf A pada database adalah Kapital)',
+                        catatan: 'Bawaan MySQL bersifat case-insensitive, tambahkan BINARY agar peka kapital.'
+                    },
+                    {
+                        nama: 'NOT LIKE',
+                        analogi: 'Mencari siswa yang namanya TIDAK mengandung huruf \'a\'.',
+                        query: 'SELECT * FROM siswa\nWHERE nama NOT LIKE \'%a%\';',
+                        hasil: 'Menampilkan nama tanpa huruf a.',
+                        catatan: 'Pembalikan kriteria cocok dari LIKE.'
+                    },
+                    {
+                        nama: 'ESCAPE (Mencari Simbol % / _)',
+                        analogi: 'Mencari judul buku yang mengandung simbol `%` asli (misal: "Kamus Bahasa Inggris 20%").',
+                        query: 'SELECT * FROM peminjaman_buku\nWHERE judul_buku LIKE \'%\\%%\';',
+                        hasil: 'Kamus Bahasa Inggris 20%',
+                        catatan: 'Gunakan backslash `\\` agar simbol `%` dibaca sebagai karakter teks biasa.'
+                    },
+                    {
+                        nama: 'RLIKE / REGEXP (\'^[A-M]\')',
+                        analogi: 'Pencarian nama yang diawali huruf antara A sampai M menggunakan Regex.',
+                        query: 'SELECT * FROM siswa\nWHERE nama RLIKE \'^[A-M]\';',
+                        hasil: 'Ahmad Dahlan, Budi Santoso, Dewi Pratama',
+                        catatan: 'Fitur Regular Expression sangat powerful untuk pencarian pola rumit.'
+                    }
+                ]
+            },
+
+            // BAB 5: KUMPULAN ORDER BY
+            {
+                id: 'order',
+                title: '5. KUMPULAN ORDER BY (PENGURUTAN)',
+                icon: 'fa-arrow-down-a-z',
+                description: 'Digunakan untuk mengurutkan hasil query berdasarkan satu atau beberapa kolom secara ascending (A-Z) atau descending (Z-A).',
+                items: [
+                    {
+                        nama: 'ORDER BY ... ASC (A-Z)',
+                        analogi: 'Mengurutkan nama siswa dari abjad A sampai Z (Urutan Absen).',
+                        query: 'SELECT * FROM siswa\nORDER BY nama ASC;',
+                        hasil: '1. Ahmad, 2. Budi, 3. Dewi, 4. Rania, 5. Siti',
+                        catatan: 'ASC adalah urutan standar default jika tidak ditulis.'
+                    },
+                    {
+                        nama: 'ORDER BY ... DESC (Z-A)',
+                        analogi: 'Menampilkan peringkat nilai angka ujian dari tertinggi ke terendah (Leaderboard).',
+                        query: 'SELECT * FROM nilai_ujian\nORDER BY nilai_angka DESC;',
+                        hasil: '1. Siti (95), 2. Siti Mtk (92), 3. Ahmad (88)...',
+                        catatan: 'Gunakan DESC untuk urutan terbesar ke terkecil / tanggal terbaru.'
+                    },
+                    {
+                        nama: 'Multi-Column Ordering',
+                        analogi: 'Mengurutkan berdasarkan Kelas (ASC), jika kelasnya sama urutkan berdasarkan Nama secara Z-A (DESC).',
+                        query: 'SELECT * FROM siswa\nORDER BY kelas ASC, nama DESC;',
+                        hasil: 'X-IPA-1 (Siti dulu baru Ahmad), X-IPA-2 (Budi)...',
+                        catatan: 'Kolom kedua baru dieksekusi jika data kolom pertama identik.'
+                    },
+                    {
+                        nama: 'ORDER BY dengan Alias / Kalkulasi',
+                        analogi: 'Mengurutkan siswa berdasarkan kalkulasi total poin pelanggaran baru.',
+                        query: 'SELECT nama, (poin_pelanggaran + 10) AS poin_total\nFROM siswa\nORDER BY poin_total DESC;',
+                        hasil: '1. Budi (25), 2. Dewi (20), 3. Ahmad (15)...',
+                        catatan: 'Di MySQL, nama kolom Alias di SELECT boleh dipakai di ORDER BY.'
+                    },
+                    {
+                        nama: 'ORDER BY FIELD() (Urutan Kustom)',
+                        analogi: 'Mengurutkan jenjang kelas SMA secara kustom: X-IPA-1, X-IPA-2, lalu XI-IPS-1.',
+                        query: 'SELECT * FROM siswa\nORDER BY FIELD(kelas, \'X-IPA-1\', \'X-IPA-2\', \'XI-IPS-1\');',
+                        hasil: 'Siswa dikelompokkan urut sesuai urutan kustom.',
+                        catatan: 'Sangat berguna jika urutan tidak bisa diselesaikan dengan A-Z standar.'
+                    },
+                    {
+                        nama: 'ORDER BY RAND() (Acak/Random)',
+                        analogi: 'Memilih 1 orang siswa secara acak untuk maju mempresentasikan tugas.',
+                        query: 'SELECT * FROM siswa\nORDER BY RAND()\nLIMIT 1;',
+                        hasil: '1 Siswa Terpilih Acak',
+                        catatan: 'Hindari memakai RAND() pada tabel raksasa jutaan baris karena dapat memperlambat database.'
+                    },
+                    {
+                        nama: 'ORDER BY + LIMIT & OFFSET (Paging)',
+                        analogi: 'Menampilkan halaman 2 data siswa (mengambil 2 baris setelah melewati 2 baris pertama).',
+                        query: 'SELECT * FROM siswa\nORDER BY id_siswa ASC\nLIMIT 2 OFFSET 2;',
+                        hasil: 'Menampilkan Budi Santoso dan Rania Putri',
+                        catatan: 'Formula Paging: OFFSET = (Halaman - 1) * Jumlah_Per_Halaman.'
+                    }
+                ]
+            },
+
+            // BAB 6: KUMPULAN GROUP BY
+            {
+                id: 'groupby',
+                title: '6. KUMPULAN GROUP BY & HAVING',
+                icon: 'fa-layer-group',
+                description: 'Mengelompokkan baris data yang memiliki nilai sama ke dalam kelompok ringkasan statistik.',
+                items: [
+                    {
+                        nama: 'GROUP BY Tunggal',
+                        analogi: 'Mengelompokkan data siswa berdasarkan Kota Asal dan menghitung jumlahnya.',
+                        query: 'SELECT kota_asal, COUNT(*) AS jumlah_siswa\nFROM siswa\nGROUP BY kota_asal;',
+                        hasil: 'Bandung: 2, Jakarta: 2, Surabaya: 1',
+                        catatan: 'Setiap kolom non-agregator di SELECT wajib masuk dalam klausa GROUP BY.'
+                    },
+                    {
+                        nama: 'GROUP BY Banyak Kolom',
+                        analogi: 'Mengelompokkan data siswa berdasarkan Kelas DAN Jenis Kelamin.',
+                        query: 'SELECT kelas, jenis_kelamin, COUNT(*) AS jumlah\nFROM siswa\nGROUP BY kelas, jenis_kelamin;',
+                        hasil: 'X-IPA-1 (L): 1, X-IPA-1 (P): 1, XI-IPS-1 (P): 2...',
+                        catatan: 'Menghasilkan pengelompokan kombinasi ganda.'
+                    },
+                    {
+                        nama: 'GROUP BY + Agregator',
+                        analogi: 'Menghitung rata-rata nilai angka ujian untuk masing-masing siswa.',
+                        query: 'SELECT id_siswa, AVG(nilai_angka) AS rerata_nilai\nFROM nilai_ujian\nGROUP BY id_siswa;',
+                        hasil: 'Siswa 1: 83.00, Siswa 2: 93.50, Siswa 3: 72.00...',
+                        catatan: 'Kombinasi Group By dan Agregator adalah kunci Laporan Analytics.'
+                    },
+                    {
+                        nama: 'HAVING Clause',
+                        analogi: 'Filter HAVING memfilter hasil kelompok agregasi yang rata-rata nilainya di atas 80.',
+                        query: 'SELECT id_siswa, AVG(nilai_angka) AS rerata\nFROM nilai_ujian\nGROUP BY id_siswa\nHAVING rerata > 80;',
+                        hasil: 'Siswa 1 (83.00), Siswa 2 (93.50), Siswa 4 (84.00)',
+                        catatan: 'Klausa WHERE TIDAK BISA dipakai untuk memfilter fungsi agregator!'
+                    },
+                    {
+                        nama: 'WHERE vs HAVING (Kombinasi)',
+                        analogi: 'WHERE menyaring semester 1 dulu, lalu HAVING menyaring rata-rata nilai semester 1 > 80.',
+                        query: 'SELECT id_siswa, AVG(nilai_angka) AS rerata\nFROM nilai_ujian\nWHERE semester = 1\nGROUP BY id_siswa\nHAVING rerata > 80;',
+                        hasil: 'WHERE memfilter baris mentah, HAVING memfilter hasil kelompok.',
+                        catatan: 'Urutan eksekusi: WHERE -> GROUP BY -> HAVING.'
+                    },
+                    {
+                        nama: 'GROUP BY ... WITH ROLLUP',
+                        analogi: 'Menampilkan jumlah siswa per kota sekaligus TOTAL KESELURUHAN di baris paling bawah.',
+                        query: 'SELECT kota_asal, COUNT(*) AS total_siswa\nFROM siswa\nGROUP BY kota_asal WITH ROLLUP;',
+                        hasil: 'Bandung: 2, Jakarta: 2, Surabaya: 1, NULL (TOTAL): 5',
+                        catatan: 'Baris paling bawah berlabel NULL memuat ringkasan Grand Total.'
+                    }
+                ]
+            },
+
+            // BAB 7: KUMPULAN JOIN
+            {
+                id: 'join',
+                title: '7. KUMPULAN JOIN & RELASI TABEL',
+                icon: 'fa-diagram-project',
+                description: 'Digunakan untuk menghubungkan 2 atau lebih tabel berdasarkan kolom kunci yang berhubungan (Primary Key & Foreign Key).',
+                items: [
+                    {
+                        nama: 'INNER JOIN (Berpasangan)',
+                        analogi: 'Menampilkan daftar siswa yang PASTI MEMILIKI nilai ujian.',
+                        query: 'SELECT s.nama, n.mata_pelajaran, n.nilai_angka\nFROM siswa s\nINNER JOIN nilai_ujian n ON s.id_siswa = n.id_siswa;',
+                        hasil: 'Ahmad, Siti, Budi, Rania muncul beserta nilainya.',
+                        catatan: 'Hanya menampilkan baris yang saling cocok/berpasangan di kedua tabel.'
+                    },
+                    {
+                        nama: 'LEFT JOIN (Semua Tabel Kiri)',
+                        analogi: 'Menampilkan SEMUA siswa, termasuk siswa yang belum memiliki nilai (misal Dewi Pratama).',
+                        query: 'SELECT s.nama, n.mata_pelajaran, n.nilai_angka\nFROM siswa s\nLEFT JOIN nilai_ujian n ON s.id_siswa = n.id_siswa;',
+                        hasil: 'Dewi Pratama tetap muncul, namun kolom nilainya berisi NULL.',
+                        catatan: 'Sangat baik untuk mengecek data siswa yang belum ujian / belum lengkap.'
+                    },
+                    {
+                        nama: 'RIGHT JOIN (Semua Tabel Kanan)',
+                        analogi: 'Menampilkan semua transaksi peminjaman buku, termasuk yang diisi ID siswa tak dikenal.',
+                        query: 'SELECT s.nama, p.judul_buku\nFROM siswa s\nRIGHT JOIN peminjaman_buku p ON s.id_siswa = p.id_siswa;',
+                        hasil: 'Buku "Kamus Bahasa Inggris 20%" tetap muncul meski id_siswa 99 tidak ada di master siswa.',
+                        catatan: 'Memprioritaskan seluruh data pada tabel sebelah kanan.'
+                    },
+                    {
+                        nama: 'FULL OUTER JOIN (via UNION)',
+                        analogi: 'Menggabungkan seluruh data dari tabel siswa dan peminjaman buku tanpa ada yang terbuang.',
+                        query: 'SELECT s.nama, p.judul_buku FROM siswa s LEFT JOIN peminjaman_buku p ON s.id_siswa = p.id_siswa\nUNION\nSELECT s.nama, p.judul_buku FROM siswa s RIGHT JOIN peminjaman_buku p ON s.id_siswa = p.id_siswa;',
+                        hasil: 'Gabungan komplit seluruh siswa dan buku.',
+                        catatan: 'MySQL memakai UNION antara LEFT dan RIGHT JOIN untuk menyimulasikan FULL JOIN.'
+                    },
+                    {
+                        nama: 'CROSS JOIN (Kartesius)',
+                        analogi: 'Memasangkan setiap siswa dengan seluruh daftar ekstrakurikuler yang ada.',
+                        query: 'SELECT s.nama, e.nama_ekskul\nFROM siswa s\nCROSS JOIN ekstrakurikuler e;',
+                        hasil: '5 Siswa x 4 Ekskul = 20 Baris Hasil Kombinasi',
+                        catatan: 'Perkalian silang antartabel. Hati-hati jika data tabel sangat besar!'
+                    },
+                    {
+                        nama: 'SELF JOIN (Relasi Diri Sendiri)',
+                        analogi: 'Mencari pasangan siswa yang berasal dari kota yang sama dalam tabel siswa.',
+                        query: 'SELECT s1.nama AS siswa_1, s2.nama AS siswa_2, s1.kota_asal\nFROM siswa s1\nJOIN siswa s2 ON s1.kota_asal = s2.kota_asal AND s1.id_siswa != s2.id_siswa;',
+                        hasil: 'Ahmad Dahlan sekota dengan Budi Santoso (Bandung)',
+                        catatan: 'Memerlukan alias tabel yang berbeda (s1 dan s2) untuk tabel yang sama.'
+                    },
+                    {
+                        nama: 'Multi-Table JOIN (3 Tabel)',
+                        analogi: 'Menghubungkan 3 tabel sekaligus: Siswa, Nilai Ujian, dan Ekstrakurikuler.',
+                        query: 'SELECT s.nama, n.mata_pelajaran, n.nilai_angka, e.nama_ekskul\nFROM siswa s\nJOIN nilai_ujian n ON s.id_siswa = n.id_siswa\nJOIN ekstrakurikuler e ON s.id_siswa = e.id_siswa;',
+                        hasil: 'Menampilkan gabungan profil komprehensif siswa.',
+                        catatan: 'Tambahkan klausa JOIN dan ON beruntun untuk setiap tabel tambahan.'
+                    }
+                ]
+            },
+
+            // BAB 8: KUMPULAN MANIPULASI DATA (DML)
+            {
+                id: 'manipulasi',
+                title: '8. KUMPULAN MANIPULASI DATA (DML)',
+                icon: 'fa-pen-to-square',
+                description: 'Digunakan untuk mengubah isi data dalam tabel database meliputi penambahan (INSERT), pemutakhiran (UPDATE), dan penghapusan (DELETE).',
+                items: [
+                    {
+                        nama: 'INSERT Single Row (1 Data Baru)',
+                        analogi: 'Petugas TU mendaftarkan 1 siswa baru yang baru pindah ke sekolah.',
+                        query: 'INSERT INTO siswa (id_siswa, nis, nama, kelas, jenis_kelamin, kota_asal, poin_pelanggaran)\nVALUES (6, \'1006\', \'Eka Wijaya\', \'X-IPA-2\', \'L\', \'Surabaya\', 0);',
+                        hasil: '1 Baris Baru Berhasil Ditambahkan (Eka Wijaya)',
+                        catatan: 'Urutan kolom di klausa INSERT harus sama persis dengan urutan nilai di klausa VALUES.'
+                    },
+                    {
+                        nama: 'INSERT Multiple Rows (Banyak Data)',
+                        analogi: 'Memasukkan 3 data nilai ujian siswa sekaligus dalam satu perintah query.',
+                        query: 'INSERT INTO nilai_ujian (id_nilai, id_siswa, mata_pelajaran, nilai_angka, semester)\nVALUES \n  (107, 3, \'Matematika\', 80, 1),\n  (108, 4, \'Matematika\', 86, 1),\n  (109, 5, \'Informatika\', 90, 1);',
+                        hasil: '3 Baris Nilai Baru Ditambahkan Sekaligus',
+                        catatan: 'Jauh lebih cepat dan efisien daripada mengeksekusi perintah INSERT satu per satu.'
+                    },
+                    {
+                        nama: 'INSERT INTO ... SELECT (Salin Data)',
+                        analogi: 'Menyalin siswa yang memiliki poin pelanggaran > 0 ke tabel khusus arsip konseling.',
+                        query: 'INSERT INTO peminjaman_buku (id_pinjam, id_siswa, judul_buku, tgl_pinjam, tgl_kembali, denda)\nSELECT 506, id_siswa, \'Buku Panduan Konseling\', \'2025-02-10\', NULL, 0\nFROM siswa WHERE poin_pelanggaran > 10;',
+                        hasil: 'Data Budi Santoso disalin ke transaksi peminjaman buku panduan konseling.',
+                        catatan: 'Sangat berguna untuk proses backup data atau migrasi antar tabel.'
+                    },
+                    {
+                        nama: 'UPDATE Umum dengan WHERE',
+                        analogi: 'Mengubah kota asal siswa bernama "Ahmad Dahlan" dari Bandung menjadi "Cimahi".',
+                        query: 'UPDATE siswa\nSET kota_asal = \'Cimahi\'\nWHERE id_siswa = 1;',
+                        hasil: 'Data Ahmad Dahlan ter-update menjadi kota_asal = Cimahi.',
+                        catatan: 'Selalu gunakan klausa WHERE dengan Primary Key agar tidak salah mengubah data siswa lain!'
+                    },
+                    {
+                        nama: 'UPDATE Multi-Column & Aritmatika',
+                        analogi: 'Menambah 5 poin pelanggaran dan mengubah kelas Budi Santoso secara bersamaan.',
+                        query: 'UPDATE siswa\nSET poin_pelanggaran = poin_pelanggaran + 5,\n    kelas = \'X-IPA-2-B\'\nWHERE id_siswa = 3;',
+                        hasil: 'Poin Budi menjadi 20 (15+5) dan kelas menjadi X-IPA-2-B.',
+                        catatan: 'Operator matematika dapat digabungkan langsung dalam perintah SET.'
+                    },
+                    {
+                        nama: 'DELETE Umum dengan WHERE',
+                        analogi: 'Menghapus data peminjaman buku yang sudah dikembalikan dan tidak memiliki denda.',
+                        query: 'DELETE FROM peminjaman_buku\nWHERE tgl_kembali IS NOT NULL AND denda = 0;',
+                        hasil: 'Data transaksi buku id 501, 503, dan 505 terhapus.',
+                        catatan: 'Data yang dihapus dengan DELETE tidak dapat di-undo jika transaksi disetujui (Commit).'
+                    },
+                    {
+                        nama: 'BAHAYA: UPDATE / DELETE Tanpa WHERE',
+                        analogi: 'PERINGATAN KRITIS: Menghapus / Mengubah seluruh baris tabel secara tidak sengaja!',
+                        query: '-- AWAS! BISA MERUSAK DATABASE SEKOLAH:\nUPDATE siswa SET poin_pelanggaran = 100;\n-- DELETE FROM siswa;',
+                        hasil: 'SELURUH BARIS SISWA TERUBAH / TERHAPUS!',
+                        catatan: 'JANGAN PERNAH menjalankan UPDATE atau DELETE tanpa klausa WHERE di database produksi!'
+                    },
+                    {
+                        nama: 'Perbedaan DELETE vs TRUNCATE vs DROP',
+                        analogi: 'Memahami 3 tingkat pembersihan data dalam database MySQL.',
+                        query: '-- DELETE: Hapus baris spesifik (Bisa WHERE)\n-- TRUNCATE: Kosongkan seluruh isi tabel (Cepat, Reset Auto-Increment)\n-- DROP TABLE: Hapus TOTAL struktur tabel beserta isinya',
+                        hasil: 'DELETE = Hapus Isi Baris\nTRUNCATE = Reset Tabel Kosong\nDROP = Hapus Tabel Total',
+                        catatan: 'TRUNCATE dan DROP termasuk DDL (Data Definition Language) dan tidak bisa di-rollback.'
+                    }
+                ]
+            }
+        ];
+
+        const sandboxPresets = [
+            { cat: '1. Aritmatika', title: 'Hitung Poin Baru (+5)', sql: "SELECT nama, poin_pelanggaran, (poin_pelanggaran + 5) AS poin_baru FROM siswa;" },
+            { cat: '2. Perbandingan', title: 'Siswa Poin > 5', sql: "SELECT * FROM siswa WHERE poin_pelanggaran > 5;" },
+            { cat: '2. Perbandingan', title: 'Buku Belum Kembali (IS NULL)', sql: "SELECT * FROM peminjaman_buku WHERE tgl_kembali IS NULL;" },
+            { cat: '3. Agregator', title: 'Rata-rata Nilai Ujian', sql: "SELECT id_siswa, AVG(nilai_angka) AS rerata FROM nilai_ujian GROUP BY id_siswa;" },
+            { cat: '4. LIKE', title: 'Nama Diawali A (A%)', sql: "SELECT * FROM siswa WHERE nama LIKE 'A%';" },
+            { cat: '5. ORDER BY', title: 'Peringkat Nilai Ujian (DESC)', sql: "SELECT * FROM nilai_ujian ORDER BY nilai_angka DESC;" },
+            { cat: '6. GROUP BY', title: 'Jumlah Siswa per Kota', sql: "SELECT kota_asal, COUNT(*) AS jumlah FROM siswa GROUP BY kota_asal;" },
+            { cat: '7. JOIN', title: 'Inner Join Siswa & Nilai', sql: "SELECT s.nama, n.mata_pelajaran, n.nilai_angka FROM siswa s JOIN nilai_ujian n ON s.id_siswa = n.id_siswa;" },
+            { cat: '8. DML', title: 'INSERT Siswa Baru', sql: "INSERT INTO siswa (id_siswa, nis, nama, kelas, jenis_kelamin, kota_asal, poin_pelanggaran) VALUES (6, '1006', 'Eka Wijaya', 'X-IPA-2', 'L', 'Surabaya', 0);" },
+            { cat: '8. DML', title: 'UPDATE Kota Siswa ID 1', sql: "UPDATE siswa SET kota_asal = 'Cimahi' WHERE id_siswa = 1;" },
+            { cat: '8. DML', title: 'DELETE Transaksi Denda 0', sql: "DELETE FROM peminjaman_buku WHERE tgl_kembali IS NOT NULL AND denda = 0;" }
+        ];
+
+        const quizQuestions = [
+            { category: 1, question: 'Operator aritmatika manakah di MySQL yang digunakan untuk melakukan pembagian bulat tanpa koma desimal?', options: ['/', '%', 'DIV', 'MOD'], answer: 2, explanation: 'DIV membuang sisa pecahan di belakang koma (Floor Integer Division).' },
+            { category: 1, question: 'Apa hasil dari query `SELECT 19 % 5 AS sisa;`?', options: ['3', '4', '3.8', '0'], answer: 1, explanation: 'Operator % (Modulo) menghitung sisa hasil bagi. 19 dibagi 5 = 3 sisa 4.' },
+            { category: 2, question: 'Sintaks query `WHERE poin_pelanggaran BETWEEN 5 AND 15` memiliki arti yang sama dengan...', options: ['poin > 5 AND poin < 15', 'poin >= 5 AND poin <= 15', 'poin = 5 OR poin = 15', 'poin IN (5, 15)'], answer: 1, explanation: 'Operator BETWEEN bersifat inklusif (Sama dengan >= AND <=).' },
+            { category: 2, question: 'Bagaimana cara memeriksa data peminjaman buku yang tanggal kembalinya belum terisi (kosong)?', options: ['WHERE tgl_kembali = NULL', 'WHERE tgl_kembali IS NULL', 'WHERE tgl_kembali = ""', 'WHERE tgl_kembali == NULL'], answer: 1, explanation: 'Memeriksa nilai NULL dalam SQL WAJIB menggunakan klausa `IS NULL`.' },
+            { category: 3, question: 'Fungsi agregator manakah yang dapat merangkum daftar teks string antar baris menjadi 1 baris teks dipisah koma?', options: ['SUM()', 'GROUP_CONCAT()', 'COUNT()', 'CONCAT()'], answer: 1, explanation: 'GROUP_CONCAT() merangkum nilai teks dari banyak baris menjadi satu string gabungan.' },
+            { category: 3, question: 'Apa perbedaan utama antara COUNT(*) dan COUNT(kolom_nama)?', options: ['COUNT(*) lebih lambat', 'COUNT(*) menghitung semua baris termasuk NULL, sedangkan COUNT(kolom) mengabaikan nilai NULL', 'Tidak ada perbedaan', 'COUNT(kolom) hanya untuk angka'], answer: 1, explanation: 'COUNT(kolom) secara otomatis mengabaikan baris yang nilainya NULL.' },
+            { category: 4, question: 'Pola klausa `LIKE \'_a%\'` pada kolom nama akan mencari nama dengan kriteria...', options: ['Diawali huruf a', 'Huruf KEDUA-nya pasti huruf "a"', 'Diakhiri huruf a', 'Hanya 2 huruf'], answer: 1, explanation: 'Underscore (_) mewakili tepat 1 karakter bebas, sehingga _a% mengunci huruf ke-2 menjadi "a".' },
+            { category: 4, question: 'Kata kunci apakah yang ditambahkan agar pencarian klausa LIKE bersifat peka huruf besar/kecil (Case-Sensitive)?', options: ['STRICT', 'EXACT', 'BINARY', 'CASE'], answer: 2, explanation: 'Menambahkan BINARY sebelum nama kolom membuat operasi LIKE bersifat case-sensitive.' },
+            { category: 5, question: 'Query `ORDER BY kelas ASC, nama DESC` akan mengurutkan data...', options: ['Kelas A-Z, lalu jika kelas sama nama diurutkan Z-A', 'Kelas Z-A, nama A-Z', 'Kelas dan nama secara acak', 'Hanya mengurutkan nama'], answer: 0, explanation: 'Multi-column ordering memprioritaskan kolom pertama, lalu kolom kedua dieksekusi jika data identik.' },
+            { category: 5, question: 'Fungsi `ORDER BY FIELD(kelas, \'X-IPA-1\', \'X-IPA-2\')` digunakan untuk...', options: ['Mengacak kelas', 'Pengurutan kustom berdasarkan prioritas daftar spesifik', 'Menghapus kelas lain', 'Pengurutan A-Z otomatis'], answer: 1, explanation: 'FIELD() memungkinkan urutan kustom yang tidak bisa diselesaikan dengan A-Z standar.' },
+            { category: 6, question: 'Mengapa kita menggunakan klausa HAVING dan bukan WHERE saat memfilter hasil AVG(nilai_angka) > 80?', options: ['HAVING lebih cepat', 'Klausa WHERE tidak dapat memfilter fungsi agregator seperti AVG()', 'WHERE hanya untuk string', 'Tidak ada bedanya'], answer: 1, explanation: 'WHERE memfilter baris mentah sebelum dikelompokkan, sedangkan HAVING memfilter hasil agregasi setelah dikelompokkan.' },
+            { category: 6, question: 'Klausa kustom apa yang ditambahkan pada GROUP BY untuk menampilkan baris Grand Total di bagian paling bawah?', options: ['WITH GRAND', 'WITH ROLLUP', 'WITH TOTAL', 'SUM ALL'], answer: 1, explanation: 'GROUP BY ... WITH ROLLUP menambahkan baris subtotal dan grand total.' },
+            { category: 7, question: 'Tipe JOIN manakah yang tetap menampilkan SELURUH baris dari tabel sebelah kiri meskipun tidak memiliki pasangan di tabel kanan?', options: ['INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'CROSS JOIN'], answer: 1, explanation: 'LEFT JOIN mempertahankan seluruh data tabel kiri dan meletakkan NULL jika tabel kanan tidak cocok.' },
+            { category: 7, question: 'Bagaimana cara melakukan FULL OUTER JOIN di database MySQL?', options: ['Menggunakan kata kunci FULL OUTER JOIN', 'Menggabungkan LEFT JOIN dan RIGHT JOIN menggunakan UNION', 'Menggunakan CROSS JOIN', 'Tidak bisa dilakukan'], answer: 1, explanation: 'MySQL tidak memiliki klausa FULL JOIN langsung, sehingga menyimulasikannya dengan UNION antara LEFT JOIN dan RIGHT JOIN.' },
+            { category: 8, question: 'Apa akibatnya jika kita menjalankan perintah `UPDATE siswa SET poin_pelanggaran = 10;` tanpa klausa WHERE?', options: ['Error sintaks', 'Hanya baris pertama yang berubah', 'SELURUH baris data siswa di database akan terubah menjadi 10', 'Tidak terjadi apa-apa'], answer: 2, explanation: 'Tanpa klausa WHERE, perintah UPDATE/DELETE akan mengeksekusi SELURUH baris data dalam tabel!' },
+            { category: 8, question: 'Perbedaan utama antara perintah `DELETE FROM siswa;` dan `TRUNCATE TABLE siswa;` adalah...', options: ['DELETE menghapus struktur tabel, TRUNCATE tidak', 'TRUNCATE menghapus seluruh isi tabel secara cepat serta mereset Auto-Increment', 'DELETE lebih cepat daripada TRUNCATE', 'Sama persis'], answer: 1, explanation: 'TRUNCATE merekonstruksi tabel kosong secara cepat dan mereset hitungan Primary Key Auto-Increment.' }
+        ];
+
+        function renderModulesHTML() {
+            const container = document.getElementById('tab-contents-container');
+            container.innerHTML = '';
+
+            modulesData.forEach((mod) => {
+                const section = document.createElement('section');
+                section.id = `section-${mod.id}`;
+                section.className = 'tab-content hidden space-y-6';
+
+                let itemsHTML = '';
+                mod.items.forEach((item, idx) => {
+                    itemsHTML += `
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm overflow-hidden hover:border-sky-300 dark:hover:border-slate-600 transition duration-200 search-item">
+                            <div class="bg-slate-100/80 dark:bg-slate-700/50 px-5 py-3 border-b border-slate-200/80 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2">
+                                <span class="font-extrabold text-xs sm:text-sm text-sky-800 dark:text-sky-300 font-mono flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-sky-500 inline-block"></span>
+                                    ${escapeHTML(item.nama)}
+                                </span>
+                                <button onclick="copyCode(\`${escapeQuotes(item.query)}\`)" class="text-[11px] bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-600 shadow-xs font-semibold transition flex items-center gap-1.5 no-print">
+                                    <i class="fa-regular fa-copy text-amber-500"></i> Salin Query
+                                </button>
+                            </div>
+                            
+                            <div class="p-5 space-y-4">
+                                <!-- Analogi SMA -->
+                                <div class="bg-sky-50/60 dark:bg-slate-900/40 p-3.5 rounded-xl text-xs text-slate-700 dark:text-slate-300 border border-sky-100 dark:border-slate-700/50 flex gap-2.5">
+                                    <i class="fa-solid fa-graduation-cap text-sky-600 dark:text-sky-400 text-base mt-0.5 shrink-0"></i>
+                                    <div>
+                                        <span class="font-bold text-sky-900 dark:text-sky-200">Analogi & Fungsi SMA:</span> ${escapeHTML(item.analogi)}
+                                    </div>
+                                </div>
+
+                                <!-- Code Snippet & Result Simulation -->
+                                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                    <div class="lg:col-span-7 bg-slate-900 text-slate-100 p-3.5 rounded-xl font-mono text-xs overflow-x-auto relative shadow-inner">
+                                        <span class="text-[10px] text-slate-400 font-sans block mb-1 uppercase tracking-wider font-bold">Sintaks SQL:</span>
+                                        <pre class="text-emerald-400 leading-relaxed">${escapeHTML(item.query)}</pre>
+                                    </div>
+                                    <div class="lg:col-span-5 bg-amber-50/50 dark:bg-slate-900/60 p-3.5 rounded-xl font-mono text-xs border border-amber-200/50 dark:border-slate-700 shadow-xs">
+                                        <span class="text-[10px] text-amber-800 dark:text-amber-400 font-sans block mb-1 uppercase tracking-wider font-bold flex items-center gap-1">
+                                            <i class="fa-solid fa-table"></i> Simulasi Hasil Data Output:
+                                        </span>
+                                        <pre class="text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">${escapeHTML(item.hasil)}</pre>
+                                    </div>
+                                </div>
+
+                                <!-- Catatan Important -->
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-start gap-2 pt-1 border-t border-slate-100 dark:border-slate-700/50">
+                                    <i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5"></i>
+                                    <span><strong class="text-slate-700 dark:text-slate-300">Tips & Misstip Pemula:</strong> ${escapeHTML(item.catatan)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                section.innerHTML = `
+                    <div class="bg-gradient-to-r from-sky-900 to-indigo-900 text-white p-6 rounded-2xl shadow-md space-y-2 border border-sky-800">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-white/10 rounded-xl backdrop-blur-md">
+                                <i class="fa-solid ${mod.icon} text-2xl text-amber-300"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">${mod.title}</h2>
+                                <p class="text-xs sm:text-sm text-sky-100">${mod.description}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        ${itemsHTML}
+                    </div>
+                `;
+
+                container.appendChild(section);
+            });
+        }
+
+        function renderSchemaTables() {
+            // Siswa
+            const tbodySiswa = document.getElementById('tbody-siswa');
+            tbodySiswa.innerHTML = dbSiswa.map(s => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td class="p-2.5 font-bold text-teal-600 dark:text-teal-400">${s.id_siswa}</td>
+                    <td class="p-2.5 text-slate-500">${s.nis}</td>
+                    <td class="p-2.5 font-semibold">${s.nama}</td>
+                    <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-[10px]">${s.kelas}</span></td>
+                    <td class="p-2.5">${s.jenis_kelamin}</td>
+                    <td class="p-2.5">${s.kota_asal}</td>
+                    <td class="p-2.5 font-bold ${s.poin_pelanggaran > 5 ? 'text-rose-500' : 'text-emerald-500'}">${s.poin_pelanggaran}</td>
+                </tr>
+            `).join('');
+
+            // Nilai
+            const tbodyNilai = document.getElementById('tbody-nilai');
+            tbodyNilai.innerHTML = dbNilai.map(n => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td class="p-2.5 font-bold text-amber-600 dark:text-amber-400">${n.id_nilai}</td>
+                    <td class="p-2.5 text-teal-600 font-bold">${n.id_siswa}</td>
+                    <td class="p-2.5">${n.mata_pelajaran}</td>
+                    <td class="p-2.5 font-bold text-sky-600 dark:text-sky-400">${n.nilai_angka}</td>
+                    <td class="p-2.5 text-slate-500">${n.semester}</td>
+                </tr>
+            `).join('');
+
+            // Ekskul
+            const tbodyEkskul = document.getElementById('tbody-ekskul');
+            tbodyEkskul.innerHTML = dbEkskul.map(e => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td class="p-2.5 font-bold text-emerald-600 dark:text-emerald-400">${e.id_ekskul}</td>
+                    <td class="p-2.5 text-teal-600 font-bold">${e.id_siswa}</td>
+                    <td class="p-2.5 font-semibold">${e.nama_ekskul}</td>
+                    <td class="p-2.5 text-slate-500">${e.jabatan}</td>
+                </tr>
+            `).join('');
+
+            // Pinjam
+            const tbodyPinjam = document.getElementById('tbody-pinjam');
+            tbodyPinjam.innerHTML = dbPinjam.map(p => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td class="p-2.5 font-bold text-sky-600 dark:text-sky-400">${p.id_pinjam}</td>
+                    <td class="p-2.5 font-bold ${p.id_siswa === 99 ? 'text-rose-500' : 'text-teal-600'}">${p.id_siswa}</td>
+                    <td class="p-2.5 font-semibold">${p.judul_buku}</td>
+                    <td class="p-2.5 text-slate-500">${p.tgl_pinjam}</td>
+                    <td class="p-2.5">${p.tgl_kembali ? p.tgl_kembali : '<span class="text-rose-500 font-bold">Belum Kembali</span>'}</td>
+                    <td class="p-2.5 font-bold ${p.denda > 0 ? 'text-rose-600' : 'text-slate-400'}">Rp ${p.denda.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSandboxPresets() {
+            const container = document.getElementById('preset-buttons');
+            container.innerHTML = sandboxPresets.map((p, idx) => `
+                <button onclick="loadPreset(${idx})" class="w-full text-left p-2.5 rounded-xl bg-slate-50 hover:bg-sky-50 dark:bg-slate-700/50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 transition flex items-center justify-between group">
+                    <div class="space-y-0.5">
+                        <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">${p.cat}</span>
+                        <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300">${p.title}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-sky-600"></i>
+                </button>
+            `).join('');
+        }
+
+        function loadPreset(idx) {
+            const p = sandboxPresets[idx];
+            document.getElementById('sql-editor').value = p.sql;
+            runCustomQuery();
+        }
+
+        function resetSampleDatabase() {
+            dbSiswa = JSON.parse(JSON.stringify(initialDbSiswa));
+            dbNilai = JSON.parse(JSON.stringify(initialDbNilai));
+            dbEkskul = JSON.parse(JSON.stringify(initialDbEkskul));
+            dbPinjam = JSON.parse(JSON.stringify(initialDbPinjam));
+            renderSchemaTables();
+            showToast('Database sekolah berhasil di-reset ke data awal!');
+            runCustomQuery();
+        }
+
+        function runCustomQuery() {
+            const rawSql = document.getElementById('sql-editor').value.trim();
+            const statusEl = document.getElementById('sim-status');
+            const expEl = document.getElementById('sim-explanation');
+            const theadEl = document.getElementById('sim-thead');
+            const tbodyEl = document.getElementById('sim-tbody');
+
+            if (!rawSql) {
+                statusEl.textContent = "Editor Kosong";
+                statusEl.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700";
+                expEl.textContent = "Silakan ketik perintah query SQL terlebih dahulu.";
+                tbodyEl.innerHTML = `<tr><td class="p-4 text-slate-400 italic text-center">Belum ada query yang dijalankan.</td></tr>`;
+                return;
+            }
+
+            const cleanSql = rawSql.replace(/\s+/g, ' ');
+
+            try {
+                // 1. INSERT SIMULATION
+                if (/^INSERT INTO/i.test(cleanSql)) {
+                    if (/siswa/i.test(cleanSql)) {
+                        // Insert Siswa
+                        const matchVal = cleanSql.match(/VALUES\s*\(([^)]+)\)/i);
+                        if (matchVal) {
+                            const args = matchVal[1].split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+                            const newObj = {
+                                id_siswa: parseInt(args[0]) || (dbSiswa.length + 1),
+                                nis: args[1] || '1006',
+                                nama: args[2] || 'Siswa Baru',
+                                kelas: args[3] || 'X-IPA-1',
+                                jenis_kelamin: args[4] || 'L',
+                                kota_asal: args[5] || 'Bandung',
+                                poin_pelanggaran: parseInt(args[6]) || 0
+                            };
+                            dbSiswa.push(newObj);
+                            renderSchemaTables();
+                            renderSingleMessageResult("INSERT SUCCESS", `1 Baris Berhasil Ditambahkan ke Tabel 'siswa'! Total Siswa Sekarang: ${dbSiswa.length}`);
+                            return;
+                        }
+                    } else if (/nilai_ujian/i.test(cleanSql)) {
+                        renderSingleMessageResult("INSERT SUCCESS", "Baris Baru Berhasil Ditambahkan ke Tabel 'nilai_ujian'!");
+                        return;
+                    } else if (/peminjaman_buku/i.test(cleanSql)) {
+                        renderSingleMessageResult("INSERT SUCCESS", "Baris Baru Berhasil Ditambahkan ke Tabel 'peminjaman_buku'!");
+                        return;
+                    }
+                }
+
+                // 2. UPDATE SIMULATION
+                if (/^UPDATE/i.test(cleanSql)) {
+                    if (/siswa/i.test(cleanSql)) {
+                        if (/kota_asal\s*=\s*'Cimahi'/i.test(cleanSql) && /id_siswa\s*=\s*1/i.test(cleanSql)) {
+                            const s1 = dbSiswa.find(x => x.id_siswa === 1);
+                            if (s1) s1.kota_asal = 'Cimahi';
+                            renderSchemaTables();
+                            renderSingleMessageResult("UPDATE SUCCESS", "1 Baris Berhasil Di-update (Ahmad Dahlan kota_asal diubah menjadi Cimahi)!");
+                            return;
+                        } else {
+                            renderSingleMessageResult("UPDATE SUCCESS", "Data Tabel 'siswa' Berhasil Di-update!");
+                            return;
+                        }
+                    }
+                }
+
+                // 3. DELETE SIMULATION
+                if (/^DELETE FROM/i.test(cleanSql)) {
+                    if (/peminjaman_buku/i.test(cleanSql)) {
+                        dbPinjam = dbPinjam.filter(p => !(p.tgl_kembali !== null && p.denda === 0));
+                        renderSchemaTables();
+                        renderSingleMessageResult("DELETE SUCCESS", "Baris Transaksi Peminjaman Buku Tanpa Denda Berhasil Dihapus!");
+                        return;
+                    }
+                }
+
+                // 4. SELECT SIMULATION
+                statusEl.textContent = "Query Sukses";
+                statusEl.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
+                expEl.textContent = `Query Berhasil Dieksekusi: "${rawSql.substring(0, 80)}${rawSql.length > 80 ? '...' : ''}"`;
+
+                let cols = [];
+                let rows = [];
+
+                if (/siswa/i.test(cleanSql) && !/JOIN/i.test(cleanSql)) {
+                    let data = [...dbSiswa];
+                    if (/WHERE poin_pelanggaran > 5/i.test(cleanSql)) {
+                        data = data.filter(s => s.poin_pelanggaran > 5);
+                    } else if (/WHERE kota_asal = 'Bandung'/i.test(cleanSql)) {
+                        data = data.filter(s => s.kota_asal === 'Bandung');
+                    } else if (/WHERE nama LIKE 'A%'/i.test(cleanSql)) {
+                        data = data.filter(s => s.nama.startsWith('A'));
+                    } else if (/ORDER BY nama ASC/i.test(cleanSql)) {
+                        data.sort((a,b) => a.nama.localeCompare(b.nama));
+                    }
+
+                    if (/COUNT\(\*\)/i.test(cleanSql) && /GROUP BY kota_asal/i.test(cleanSql)) {
+                        cols = ['kota_asal', 'jumlah_siswa'];
+                        rows = [
+                            ['Bandung', 2],
+                            ['Jakarta', 2],
+                            ['Surabaya', 1]
+                        ];
+                    } else if (/poin_pelanggaran\s*\+\s*5/i.test(cleanSql)) {
+                        cols = ['nama', 'poin_pelanggaran', 'poin_baru'];
+                        rows = data.map(s => [s.nama, s.poin_pelanggaran, s.poin_pelanggaran + 5]);
+                    } else {
+                        cols = ['id_siswa', 'nis', 'nama', 'kelas', 'jenis_kelamin', 'kota_asal', 'poin_pelanggaran'];
+                        rows = data.map(s => [s.id_siswa, s.nis, s.nama, s.kelas, s.jenis_kelamin, s.kota_asal, s.poin_pelanggaran]);
+                    }
+                } else if (/nilai_ujian/i.test(cleanSql) && !/JOIN/i.test(cleanSql)) {
+                    let data = [...dbNilai];
+                    if (/ORDER BY nilai_angka DESC/i.test(cleanSql)) {
+                        data.sort((a,b) => b.nilai_angka - a.nilai_angka);
+                    }
+                    if (/AVG\(nilai_angka\)/i.test(cleanSql)) {
+                        cols = ['id_siswa', 'rerata'];
+                        rows = [
+                            [1, 83.00],
+                            [2, 93.50],
+                            [3, 72.00],
+                            [4, 84.00]
+                        ];
+                    } else {
+                        cols = ['id_nilai', 'id_siswa', 'mata_pelajaran', 'nilai_angka', 'semester'];
+                        rows = data.map(n => [n.id_nilai, n.id_siswa, n.mata_pelajaran, n.nilai_angka, n.semester]);
+                    }
+                } else if (/peminjaman_buku/i.test(cleanSql) && !/JOIN/i.test(cleanSql)) {
+                    let data = [...dbPinjam];
+                    if (/WHERE tgl_kembali IS NULL/i.test(cleanSql)) {
+                        data = data.filter(p => p.tgl_kembali === null);
+                    }
+                    cols = ['id_pinjam', 'id_siswa', 'judul_buku', 'tgl_pinjam', 'tgl_kembali', 'denda'];
+                    rows = data.map(p => [p.id_pinjam, p.id_siswa, p.judul_buku, p.tgl_pinjam, p.tgl_kembali || 'NULL', `Rp ${p.denda}`]);
+                } else if (/JOIN/i.test(cleanSql)) {
+                    cols = ['nama_siswa', 'mata_pelajaran', 'nilai_angka'];
+                    rows = [
+                        ['Ahmad Dahlan', 'Informatika', 88],
+                        ['Siti Nurhaliza', 'Informatika', 95],
+                        ['Budi Santoso', 'Informatika', 72],
+                        ['Rania Putri', 'Informatika', 84],
+                        ['Ahmad Dahlan', 'Matematika', 78],
+                        ['Siti Nurhaliza', 'Matematika', 92]
+                    ];
+                } else {
+                    cols = ['Hasil_Query'];
+                    rows = [['Perintah SQL Diterima dan Berhasil Dieksekusi pada Database Memori.']];
+                }
+
+                // Build Table
+                theadEl.innerHTML = `<tr>${cols.map(c => `<th class="p-3 bg-slate-100 dark:bg-slate-700/60">${c}</th>`).join('')}</tr>`;
+                tbodyEl.innerHTML = rows.map(r => `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 border-b border-slate-100 dark:border-slate-700/50">
+                        ${r.map(val => `<td class="p-3">${val}</td>`).join('')}
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                statusEl.textContent = "Query Error";
+                statusEl.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300";
+                expEl.textContent = `Kesalahan Sintaks SQL: ${err.message}`;
+                tbodyEl.innerHTML = `<tr><td class="p-4 text-rose-500 italic text-center">Error saat mengeksekusi query. Periksa kembali penulisan sintaks.</td></tr>`;
+            }
+        }
+
+        function renderSingleMessageResult(title, msg) {
+            document.getElementById('sim-status').textContent = title;
+            document.getElementById('sim-status').className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+            document.getElementById('sim-explanation').textContent = msg;
+            document.getElementById('sim-thead').innerHTML = `<tr><th class="p-3">Status Respon Database Engine</th></tr>`;
+            document.getElementById('sim-tbody').innerHTML = `
+                <tr>
+                    <td class="p-4 text-emerald-600 font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-base"></i> ${msg}
+                    </td>
+                </tr>
+            `;
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = quizQuestions.map((q, idx) => `
+                <div class="quiz-card bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4" data-category="${q.category}">
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="font-extrabold text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-lg">
+                            Soal #${idx + 1} (Bab ${q.category})
+                        </span>
+                        <span id="quiz-badge-${idx}" class="hidden text-[10px] font-bold px-2.5 py-0.5 rounded-full"></span>
+                    </div>
+
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 leading-relaxed">${escapeHTML(q.question)}</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        ${q.options.map((opt, oIdx) => `
+                            <label class="quiz-opt-label flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition text-xs">
+                                <input type="radio" name="quiz-q-${idx}" value="${oIdx}" class="text-indigo-600 focus:ring-indigo-500">
+                                <span>${escapeHTML(opt)}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+
+                    <div id="quiz-exp-${idx}" class="hidden p-3.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed border-l-4 border-indigo-500">
+                        <strong>Pembahasan:</strong> ${escapeHTML(q.explanation)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterQuizCat(cat) {
+            const btns = document.querySelectorAll('.quiz-cat-btn');
+            btns.forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white', 'font-bold');
+                b.classList.add('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+            });
+            event.target.classList.add('bg-indigo-600', 'text-white', 'font-bold');
+
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(c => {
+                if (cat === 'ALL' || c.getAttribute('data-category') == cat) {
+                    c.classList.remove('hidden');
+                } else {
+                    c.classList.add('hidden');
+                }
+            });
+        }
+
+        function submitQuiz() {
+            let correct = 0;
+            quizQuestions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="quiz-q-${idx}"]:checked`);
+                const badge = document.getElementById(`quiz-badge-${idx}`);
+                const exp = document.getElementById(`quiz-exp-${idx}`);
+
+                badge.classList.remove('hidden');
+                exp.classList.remove('hidden');
+
+                if (selected && parseInt(selected.value) === q.answer) {
+                    correct++;
+                    badge.textContent = "BENAR";
+                    badge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
+                } else {
+                    badge.textContent = "SALAH";
+                    badge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300";
+                }
+            });
+
+            const score = Math.round((correct / quizQuestions.length) * 100);
+            const scoreDisplay = document.getElementById('quiz-score-display');
+            scoreDisplay.textContent = `${score} / 100`;
+
+            showToast(`Kuis Selesai! Skor Kamu: ${score}`);
+        }
+
+        function resetQuiz() {
+            renderQuiz();
+            document.getElementById('quiz-score-display').textContent = '0 / 100';
+            showToast('Kuis berhasil di-reset!');
+        }
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.add('hidden'));
+
+            // Show target section
+            const targetSection = document.getElementById(`section-${tabId}`);
+            if (targetSection) targetSection.classList.remove('hidden');
+
+            // Reset tab button styles
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => {
+                b.className = "tab-btn px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap";
+            });
+
+            // Highlight active button
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (activeBtn) {
+                if (tabId === 'manipulasi') {
+                    activeBtn.className = "tab-btn px-3 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700 transition flex items-center gap-1.5 whitespace-nowrap";
+                } else if (tabId === 'schema') {
+                    activeBtn.className = "tab-btn px-3 py-2 rounded-xl text-xs font-bold text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap";
+                } else if (tabId === 'simulator') {
+                    activeBtn.className = "tab-btn px-3 py-2 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap";
+                } else if (tabId === 'kuis') {
+                    activeBtn.className = "tab-btn px-3 py-2 rounded-xl text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-slate-700 transition flex items-center gap-1.5 whitespace-nowrap";
+                } else {
+                    activeBtn.className = "tab-btn px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-sky-100 dark:bg-slate-700 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-slate-600";
+                }
+            }
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function handleGlobalSearch() {
+            const query = document.getElementById('global-search').value.toLowerCase();
+            const items = document.querySelectorAll('.search-item');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function copyCode(text) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('Sintaks SQL berhasil disalin ke clipboard!');
+        }
+
+        function copyCurrentEditor() {
+            const text = document.getElementById('sql-editor').value;
+            copyCode(text);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-copy');
+            toast.querySelector('span').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function escapeQuotes(str) {
+            if (!str) return '';
+            return str.replace(/`/g, '\\`').replace(/\$/g, '\\$');
+        }
+
+        // Window Load Handler
+        window.onload = function() {
+            renderModulesHTML();
+            renderSchemaTables();
+            renderSandboxPresets();
+            renderQuiz();
+            switchTab('aritmatika');
+            loadPreset(0);
+        };
+    </script>
+</body>
+</html>
